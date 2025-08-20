@@ -1,13 +1,13 @@
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import { ToDo } from "../todo/todo";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "UX Focused ToDo App" },
+    { name: "A ToDo App with focus in usability", content: "A very simple and easy to use ToDo App!" },
   ];
 }
 
 export default function Home() {
-  return <Welcome />;
+  return <ToDo />;
 }
