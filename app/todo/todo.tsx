@@ -28,7 +28,7 @@ export function ToDo() {
             <FormLabel sx={{ color: "whitesmoke" }}>
               Uncompleted tasks
             </FormLabel>
-            {tasks.map(({ text, createdAt, expires, finished }) => {
+            {tasks.map(({ text, createdAt, completedAt, finished }) => {
               let key = createdAt.getTime();
               return (
                 <TaskItem
@@ -36,7 +36,7 @@ export function ToDo() {
                   name={`ti-${key}`}
                   label={text}
                   createdAt={createdAt}
-                  expiresAt={expires}
+                  completedAt={completedAt}
                   finished={finished}
                 />
               );
@@ -52,25 +52,25 @@ const tasks = [
   {
     text: "Eat",
     createdAt: new Date("2025-08-10 12:20:00"),
-    expires: new Date("2025-08-20 13:20:00"),
+    completedAt: new Date("2025-08-20 13:20:00"),
     finished: true,
   },
   {
     text: "Program",
     createdAt: new Date("2025-08-20 13:30:00"),
-    expires: new Date("2025-08-20 15:00:00"),
+    completedAt: new Date("2025-08-20 15:00:00"),
     finished: true,
   },
   {
     text: "Meeting with Y先生",
     createdAt: new Date("2025-08-21 14:10:00"),
-    expires: new Date("2025-08-21 14:50:00"),
+    completedAt: undefined,
     finished: false,
   },
   {
     text: "Practice guitar",
     createdAt: new Date("2025-08-21 15:00:00"),
-    expires: new Date("2025-08-21 20:00:00"),
+    completedAt: undefined,
     finished: false,
   },
 ];
