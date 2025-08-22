@@ -1,6 +1,7 @@
 import * as React from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Checkbox } from "@mui/material";
+import type { TaskObject } from "./todo";
 
 interface ITaskItemParams {
   name: string;
@@ -8,11 +9,7 @@ interface ITaskItemParams {
   createdAt: Date;
   completedAt: Date | undefined;
   finished: boolean;
-}
-
-interface IState {
-  checked: boolean;
-  completedAt: Date | undefined;
+  updateTaskList: Function;
 }
 
 function TaskItem({
@@ -21,29 +18,28 @@ function TaskItem({
   createdAt,
   completedAt,
   finished,
+  updateTaskList,
 }: ITaskItemParams) {
-  const [state, setState] = React.useState<IState>({
-    checked: finished,
-    completedAt: completedAt,
-  });
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = !state.checked;
+    const isChecked = event.currentTarget.checked;
     const completionTime = isChecked ? new Date() : undefined;
     console.log(completionTime);
-    setState({
-      ...state,
-      checked: isChecked,
+    const taskKey = name.split("-")[1];
+    const newTask: TaskObject = {
+      text: label,
+      createdAt: createdAt,
       completedAt: completionTime,
-    });
+      finished: isChecked,
+    };
+    updateTaskList(taskKey, newTask);
   };
 
   const timeLegend = () => {
-    const type = state.completedAt
+    const type = completedAt
       ? TimeLegendType.Completion
       : TimeLegendType.Creation;
     const now = new Date();
-    const date = state.completedAt ? state.completedAt : createdAt;
+    const date = completedAt ? completedAt : createdAt;
     const diff = now.valueOf() - date.valueOf();
     const diffInHours = diff / 1000 / 60 / 60;
     let sinceString = type == TimeLegendType.Completion ? "Finished " : "";
@@ -75,11 +71,7 @@ function TaskItem({
         aria-label={`task-element-${label.slice(0, 10)}`}
         label={label}
         control={
-          <Checkbox
-            checked={state.checked}
-            onChange={handleChange}
-            name={name}
-          />
+          <Checkbox checked={finished} onChange={handleChange} name={name} />
         }
       />
       {timeLegend()}
