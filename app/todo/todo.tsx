@@ -9,7 +9,6 @@ import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 import TaskItem from "./TaskItem";
-import { finished } from "stream";
 
 type TaskObject = {
   text: string;
@@ -34,25 +33,28 @@ function ToDo() {
     setState({
       ...state,
       tasks: tasks,
+      newTaskInput: "",
     });
   }, []);
 
   const updateTaskList = (taskKey: string, newTask: TaskObject) => {
-    tasks[taskKey] = newTask;
     setState({
       ...state,
-      tasks: tasks,
+      tasks: { ...state.tasks, [taskKey]: newTask },
     });
   };
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setState({
       ...state,
       newTaskInput: event.target.value,
     });
   };
-  const addNewTask = (_: React.MouseEvent<SVGSVGElement>) => {
+
+  const addNewTask = (event: React.MouseEvent) => {
     const now = new Date();
-    tasks[now.getTime().toString()] = {
+    const newKey = now.getTime().toString();
+    const newTask = {
       text: state.newTaskInput,
       createdAt: now,
       completedAt: undefined,
@@ -60,7 +62,7 @@ function ToDo() {
     };
     setState({
       ...state,
-      tasks: tasks,
+      tasks: { ...state.tasks, [newKey]: newTask },
     });
   };
 
@@ -82,15 +84,26 @@ function ToDo() {
               Your very useful ToDo checklist
             </p>
           </div>
-          <div className="flex-row">
+          <div className="flex-row text-center">
             <FormControl sx={{ m: 5 }} component="fieldset" variant="standard">
-              <Input
-                type="text"
-                name="new-task-input"
-                onChange={handleInputChange}
-              />
-              &nbsp;
-              <AddCircleOutlineIcon color="primary" onClick={addNewTask} />
+              <FormGroup id="new-task-form" key="new-task-form">
+                <div className="flex flex-row items-center gap-2">
+                  <Input
+                    type="text"
+                    id="new-task-input"
+                    name="new-task-input"
+                    onChange={handleInputChange}
+                  />
+                  <IconButton
+                    onMouseOut={() => console.log("out")}
+                    onClick={addNewTask}
+                    id="new-task-button"
+                    name="new-task-button"
+                  >
+                    <AddCircleOutlineIcon color="primary" />
+                  </IconButton>
+                </div>
+              </FormGroup>
             </FormControl>
           </div>
           <div className="flex-row">
