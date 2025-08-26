@@ -23,7 +23,6 @@ function TaskItem({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.currentTarget.checked;
     const completionTime = isChecked ? new Date() : undefined;
-    console.log(completionTime);
     const taskKey = name.split("-")[1];
     const newTask: TaskObject = {
       text: label,
@@ -39,7 +38,7 @@ function TaskItem({
       ? TimeLegendType.Completion
       : TimeLegendType.Creation;
     const now = new Date();
-    const date = completedAt ? completedAt : createdAt;
+    const date: Date = completedAt ? completedAt : createdAt;
     const diff = now.valueOf() - date.valueOf();
     const diffInHours = diff / 1000 / 60 / 60;
     let sinceString = type == TimeLegendType.Completion ? "Finished " : "";

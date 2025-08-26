@@ -17,9 +17,52 @@ type TaskObject = {
   finished: boolean;
 };
 
+type RawTaskObject = {
+  text: string;
+  createdAt: string;
+  completedAt: string;
+  finished: boolean;
+};
+
 interface IToDoState {
   tasks: { [key: string]: TaskObject };
   newTaskInput: string;
+}
+
+const LOCAL_STORAGE_KEY = "tasks";
+
+function getTasksFromLocalStorage(): { [key: string]: TaskObject } {
+  var tasks: { [key: string]: TaskObject } = {};
+  try {
+    const item = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+    const rawTasksList: { [key: string]: RawTaskObject } = item
+      ? JSON.parse(item)
+      : {};
+    Object.keys(rawTasksList).map((taskKey) => {
+      const rawTask: RawTaskObject = rawTasksList[taskKey];
+      tasks[taskKey] = {
+        text: rawTask.text,
+        createdAt: new Date(rawTask.createdAt),
+        completedAt: new Date(rawTask.completedAt),
+        finished: rawTask.finished,
+      };
+    });
+  } catch (error) {
+    console.log("Failed to get tasks from localStorage: " + error);
+  }
+  return tasks;
+}
+
+function saveTasksToLocalStorage(newTasks: {
+  [key: string]: TaskObject;
+}): boolean {
+  try {
+    window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newTasks));
+    return true;
+  } catch (error) {
+    console.log("Failed to save tasks to localStorage: " + error);
+    return false;
+  }
 }
 
 function ToDo() {
@@ -30,6 +73,9 @@ function ToDo() {
 
   // On mount, retrieve data from localStorage
   React.useEffect(() => {
+    var tasks = getTasksFromLocalStorage();
+    console.log("Loading to state: ");
+    console.log(tasks);
     setState({
       ...state,
       tasks: tasks,
@@ -38,9 +84,11 @@ function ToDo() {
   }, []);
 
   const updateTaskList = (taskKey: string, newTask: TaskObject) => {
+    const newTasks = { ...state.tasks, [taskKey]: newTask };
+    saveTasksToLocalStorage(newTasks);
     setState({
       ...state,
-      tasks: { ...state.tasks, [taskKey]: newTask },
+      tasks: newTasks,
     });
   };
 
@@ -53,18 +101,59 @@ function ToDo() {
 
   const addNewTask = (event: React.MouseEvent) => {
     const now = new Date();
-    const newKey = now.getTime().toString();
+    const taskKey = now.getTime().toString();
     const newTask = {
       text: state.newTaskInput,
       createdAt: now,
       completedAt: undefined,
       finished: false,
     };
+    const newTasks = { ...state.tasks, [taskKey]: newTask };
+    saveTasksToLocalStorage(newTasks);
     setState({
       ...state,
-      tasks: { ...state.tasks, [newKey]: newTask },
+      tasks: newTasks,
     });
   };
+
+  const unfinishedTasks = Object.keys(state.tasks)
+    .map((taskKey) => {
+      const task = state.tasks[taskKey];
+      if (task.finished) {
+        return;
+      }
+      return (
+        <TaskItem
+          key={taskKey}
+          name={`ti-${taskKey}`}
+          label={task.text}
+          createdAt={task.createdAt}
+          completedAt={task.completedAt}
+          finished={task.finished}
+          updateTaskList={updateTaskList}
+        />
+      );
+    })
+    .filter((x) => !!x);
+  const finishedTasks = Object.keys(state.tasks)
+    .map((taskKey) => {
+      const task = state.tasks[taskKey];
+      if (!task.finished) {
+        return;
+      }
+      return (
+        <TaskItem
+          key={taskKey}
+          name={`ti-${taskKey}`}
+          label={task.text}
+          createdAt={task.createdAt}
+          completedAt={task.completedAt}
+          finished={task.finished}
+          updateTaskList={updateTaskList}
+        />
+      );
+    })
+    .filter((x) => !!x);
 
   return (
     <main className="flex items-center justify-center pt-16 pb-4">
@@ -106,53 +195,35 @@ function ToDo() {
               </FormGroup>
             </FormControl>
           </div>
-          <div className="flex-row">
-            <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+          <div
+            className="flex-row"
+            style={unfinishedTasks.length > 0 ? {} : { display: "none" }}
+          >
+            <FormControl
+              sx={{ m: 3, minWidth: 3 / 4 }}
+              component="fieldset"
+              variant="standard"
+            >
               <FormLabel sx={{ color: "whitesmoke" }}>
                 Unfinished tasks
               </FormLabel>
               <FormGroup id="unfinished-tasks" key="unfinished-tasks">
-                {Object.keys(state.tasks).map((taskKey) => {
-                  const task = state.tasks[taskKey];
-                  if (task.finished) {
-                    return;
-                  }
-                  return (
-                    <TaskItem
-                      key={taskKey}
-                      name={`ti-${taskKey}`}
-                      label={task.text}
-                      createdAt={task.createdAt}
-                      completedAt={task.completedAt}
-                      finished={task.finished}
-                      updateTaskList={updateTaskList}
-                    />
-                  );
-                })}
+                {unfinishedTasks}
               </FormGroup>
             </FormControl>
           </div>
-          <div className="flex-row">
-            <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+          <div
+            className="flex-row"
+            style={finishedTasks.length > 0 ? {} : { display: "none" }}
+          >
+            <FormControl
+              sx={{ m: 3, minWidth: 3 / 4 }}
+              component="fieldset"
+              variant="standard"
+            >
               <FormLabel sx={{ color: "whitesmoke" }}>Finished tasks</FormLabel>
               <FormGroup id="finished-tasks" key="finished-tasks">
-                {Object.keys(state.tasks).map((taskKey) => {
-                  const task = state.tasks[taskKey];
-                  if (!task.finished) {
-                    return;
-                  }
-                  return (
-                    <TaskItem
-                      key={taskKey}
-                      name={`ti-${taskKey}`}
-                      label={task.text}
-                      createdAt={task.createdAt}
-                      completedAt={task.completedAt}
-                      finished={task.finished}
-                      updateTaskList={updateTaskList}
-                    />
-                  );
-                })}
+                {finishedTasks}
               </FormGroup>
             </FormControl>
           </div>
@@ -161,32 +232,6 @@ function ToDo() {
     </main>
   );
 }
-const tasks: { [key: string]: TaskObject } = {
-  [new Date("2025-08-10 12:20:00").getTime().toString()]: {
-    text: "Eat",
-    createdAt: new Date("2025-08-10 12:20:00"),
-    completedAt: new Date("2025-08-20 13:20:00"),
-    finished: true,
-  },
-  [new Date("2025-08-20 13:30:00").getTime().toString()]: {
-    text: "Program",
-    createdAt: new Date("2025-08-20 13:30:00"),
-    completedAt: new Date("2025-08-20 15:00:00"),
-    finished: true,
-  },
-  [new Date("2025-08-21 14:10:00").getTime().toString()]: {
-    text: "Meeting with Y先生",
-    createdAt: new Date("2025-08-21 14:10:00"),
-    completedAt: undefined,
-    finished: false,
-  },
-  [new Date("2025-08-21 15:00:00").getTime().toString()]: {
-    text: "Practice guitar",
-    createdAt: new Date("2025-08-21 15:00:00"),
-    completedAt: undefined,
-    finished: false,
-  },
-};
 
 export { ToDo };
 export type { TaskObject };
