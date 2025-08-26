@@ -3,7 +3,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { Checkbox } from "@mui/material";
 
 import type { TaskObject } from "./todo";
-import ConfirmationDialog from "../components/ConfirmationDialog";
+import ConfirmationDialog from "~/components/ConfirmationDialog";
 
 interface ITaskItemParams {
   name: string;
@@ -12,7 +12,7 @@ interface ITaskItemParams {
   completedAt: Date | undefined;
   finished: boolean;
   updateTaskList: Function;
-  deleteTask: Function;
+  deleteTasks: Function;
 }
 
 function TaskItem({
@@ -22,7 +22,7 @@ function TaskItem({
   completedAt,
   finished,
   updateTaskList,
-  deleteTask,
+  deleteTasks,
 }: ITaskItemParams) {
   const [isDialogOpen, setDialogOpen] = React.useState(false);
   const taskKey = name.split("-")[1];
@@ -91,7 +91,7 @@ function TaskItem({
       <ConfirmationDialog
         open={isDialogOpen}
         onClose={() => {}}
-        onConfirm={() => deleteTask(taskKey)}
+        onConfirm={() => deleteTasks([taskKey])}
         title="Task Delete"
         message={`Are you sure you want to delete the task "${label}"?`}
       />

@@ -7,6 +7,8 @@ import Input from "@mui/material/Input";
 import FormLabel from "@mui/material/FormLabel";
 import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import Button from "@mui/material/Button";
+import ConfirmationDialog from "~/components/ConfirmationDialog";
 
 import TaskItem from "./TaskItem";
 
@@ -27,6 +29,8 @@ type RawTaskObject = {
 interface IToDoState {
   tasks: { [key: string]: TaskObject };
   newTaskInput: string;
+  isClearFDialogOpen: boolean;
+  isClearUDialogOpen: boolean;
 }
 
 const LOCAL_STORAGE_KEY = "tasks";
@@ -69,6 +73,8 @@ function ToDo() {
   const [state, setState] = React.useState<IToDoState>({
     tasks: {},
     newTaskInput: "",
+    isClearUDialogOpen: false,
+    isClearFDialogOpen: false,
   });
 
   // On mount, retrieve data from localStorage
@@ -77,9 +83,10 @@ function ToDo() {
     console.log("Loading to state: ");
     console.log(tasks);
     setState({
-      ...state,
       tasks: tasks,
       newTaskInput: "",
+      isClearUDialogOpen: false,
+      isClearFDialogOpen: false,
     });
   }, []);
 
@@ -116,8 +123,14 @@ function ToDo() {
     });
   };
 
-  const deleteTask = (taskKey: string) => {
-    const { [taskKey]: _, ...newTasks } = state.tasks;
+  const deleteTasks = (tasksKeys: string[]) => {
+    const newTasks: { [key: string]: TaskObject } = {};
+    Object.keys(state.tasks).map((taskKey: string) => {
+      if (tasksKeys.includes(taskKey)) {
+        return;
+      }
+      newTasks[taskKey] = state.tasks[taskKey];
+    });
     saveTasksToLocalStorage(newTasks);
     setState({
       ...state,
@@ -125,12 +138,14 @@ function ToDo() {
     });
   };
 
+  const unfinishedTasksKeys = new Array<string>();
   const unfinishedTasks = Object.keys(state.tasks)
     .map((taskKey) => {
       const task = state.tasks[taskKey];
       if (task.finished) {
         return;
       }
+      unfinishedTasksKeys.push(taskKey);
       return (
         <TaskItem
           key={taskKey}
@@ -140,17 +155,29 @@ function ToDo() {
           completedAt={task.completedAt}
           finished={task.finished}
           updateTaskList={updateTaskList}
-          deleteTask={deleteTask}
+          deleteTasks={deleteTasks}
         />
       );
     })
     .filter((x) => !!x);
+  const unfinishedTasksClearDialog = (
+    <ConfirmationDialog
+      open={state.isClearUDialogOpen}
+      onClose={() => {}}
+      onConfirm={() => deleteTasks(unfinishedTasksKeys)}
+      title="Clear Unfinished Tasks"
+      message={`Are you sure you want to delete all ${unfinishedTasksKeys.length} unfinished tasks?`}
+    />
+  );
+
+  const finishedTasksKeys = new Array<string>();
   const finishedTasks = Object.keys(state.tasks)
     .map((taskKey) => {
       const task = state.tasks[taskKey];
       if (!task.finished) {
         return;
       }
+      finishedTasksKeys.push(taskKey);
       return (
         <TaskItem
           key={taskKey}
@@ -160,11 +187,20 @@ function ToDo() {
           completedAt={task.completedAt}
           finished={task.finished}
           updateTaskList={updateTaskList}
-          deleteTask={deleteTask}
+          deleteTasks={deleteTasks}
         />
       );
     })
     .filter((x) => !!x);
+  const finishedTasksClearDialog = (
+    <ConfirmationDialog
+      open={state.isClearUDialogOpen}
+      onClose={() => {}}
+      onConfirm={() => deleteTasks(finishedTasksKeys)}
+      title="Clear Finished Tasks"
+      message={`Are you sure you want to delete all ${finishedTasksKeys.length} finished tasks?`}
+    />
+  );
 
   return (
     <main className="flex items-center justify-center pt-16 pb-4">
@@ -221,6 +257,13 @@ function ToDo() {
               </FormLabel>
               <FormGroup id="unfinished-tasks" key="unfinished-tasks">
                 {unfinishedTasks}
+                <Button
+                  onClick={() =>
+                    setState({ ...state, isClearUDialogOpen: true })
+                  }
+                >
+                  Clear
+                </Button>
               </FormGroup>
             </FormControl>
           </div>
@@ -237,6 +280,13 @@ function ToDo() {
               <FormLabel sx={{ color: "whitesmoke" }}>Finished tasks</FormLabel>
               <FormGroup id="finished-tasks" key="finished-tasks">
                 {finishedTasks}
+                <Button
+                  onClick={() =>
+                    setState({ ...state, isClearFDialogOpen: true })
+                  }
+                >
+                  Clear
+                </Button>
               </FormGroup>
             </FormControl>
           </div>
