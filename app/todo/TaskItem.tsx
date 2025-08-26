@@ -1,7 +1,9 @@
 import * as React from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Checkbox } from "@mui/material";
+
 import type { TaskObject } from "./todo";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 
 interface ITaskItemParams {
   name: string;
@@ -10,6 +12,7 @@ interface ITaskItemParams {
   completedAt: Date | undefined;
   finished: boolean;
   updateTaskList: Function;
+  deleteTask: Function;
 }
 
 function TaskItem({
@@ -19,11 +22,14 @@ function TaskItem({
   completedAt,
   finished,
   updateTaskList,
+  deleteTask,
 }: ITaskItemParams) {
+  const [isDialogOpen, setDialogOpen] = React.useState(false);
+  const taskKey = name.split("-")[1];
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.currentTarget.checked;
     const completionTime = isChecked ? new Date() : undefined;
-    const taskKey = name.split("-")[1];
     const newTask: TaskObject = {
       text: label,
       createdAt: createdAt,
@@ -32,6 +38,15 @@ function TaskItem({
     };
     updateTaskList(taskKey, newTask);
   };
+
+  const deleteText = (
+    <span
+      className="absolute bottom-1 right-2 text-xs text-red-500"
+      onClick={() => setDialogOpen(true)}
+    >
+      Delete
+    </span>
+  );
 
   const timeLegend = () => {
     const type = completedAt
@@ -73,7 +88,15 @@ function TaskItem({
           <Checkbox checked={finished} onChange={handleChange} name={name} />
         }
       />
+      <ConfirmationDialog
+        open={isDialogOpen}
+        onClose={() => {}}
+        onConfirm={() => deleteTask(taskKey)}
+        title="Task Delete"
+        message={`Are you sure you want to delete the task "${label}"?`}
+      />
       {timeLegend()}
+      {deleteText}
     </div>
   );
 }

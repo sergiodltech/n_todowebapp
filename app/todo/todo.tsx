@@ -116,6 +116,15 @@ function ToDo() {
     });
   };
 
+  const deleteTask = (taskKey: string) => {
+    const { [taskKey]: _, ...newTasks } = state.tasks;
+    saveTasksToLocalStorage(newTasks);
+    setState({
+      ...state,
+      tasks: newTasks,
+    });
+  };
+
   const unfinishedTasks = Object.keys(state.tasks)
     .map((taskKey) => {
       const task = state.tasks[taskKey];
@@ -131,6 +140,7 @@ function ToDo() {
           completedAt={task.completedAt}
           finished={task.finished}
           updateTaskList={updateTaskList}
+          deleteTask={deleteTask}
         />
       );
     })
@@ -150,6 +160,7 @@ function ToDo() {
           completedAt={task.completedAt}
           finished={task.finished}
           updateTaskList={updateTaskList}
+          deleteTask={deleteTask}
         />
       );
     })
@@ -200,7 +211,8 @@ function ToDo() {
             style={unfinishedTasks.length > 0 ? {} : { display: "none" }}
           >
             <FormControl
-              sx={{ m: 3, minWidth: 3 / 4 }}
+              fullWidth
+              sx={{ m: 3 }}
               component="fieldset"
               variant="standard"
             >
@@ -217,7 +229,8 @@ function ToDo() {
             style={finishedTasks.length > 0 ? {} : { display: "none" }}
           >
             <FormControl
-              sx={{ m: 3, minWidth: 3 / 4 }}
+              fullWidth
+              sx={{ m: 3 }}
               component="fieldset"
               variant="standard"
             >
