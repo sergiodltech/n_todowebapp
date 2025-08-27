@@ -5,8 +5,12 @@ A ToDo App focused on Usability.
 ## Features
 
 - Quick task creation
+  - Tasks deletion with confirmation dialogs
 - Client-side persistency using browser's localStorage
 - Completed tasks get push to the end of the list
+- Time since completion / creation
+- Clear separation between finished and unfinished tasks
+  - Clear list buttons
 - Dark / Light mode (Optional)
 - Expiration DateTime (Optional)
 
