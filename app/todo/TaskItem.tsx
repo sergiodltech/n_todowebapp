@@ -9,7 +9,7 @@ interface ITaskItemParams {
   name: string;
   label: string;
   createdAt: Date;
-  completedAt: Date | undefined;
+  completedAt: Date | null;
   finished: boolean;
   updateTaskList: Function;
   deleteTasks: Function;
@@ -29,7 +29,7 @@ function TaskItem({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.currentTarget.checked;
-    const completionTime = isChecked ? new Date() : undefined;
+    const completionTime = isChecked ? new Date() : null;
     const newTask: TaskObject = {
       text: label,
       createdAt: createdAt,
@@ -49,9 +49,10 @@ function TaskItem({
   );
 
   const timeLegend = () => {
-    const type = completedAt
-      ? TimeLegendType.Completion
-      : TimeLegendType.Creation;
+    const type =
+      completedAt !== null
+        ? TimeLegendType.Completion
+        : TimeLegendType.Creation;
     const now = new Date();
     const date: Date = completedAt ? completedAt : createdAt;
     const diff = now.valueOf() - date.valueOf();
@@ -90,8 +91,11 @@ function TaskItem({
       />
       <ConfirmationDialog
         open={isDialogOpen}
-        onClose={() => {}}
-        onConfirm={() => deleteTasks([taskKey])}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={() => {
+          deleteTasks([taskKey]);
+          setDialogOpen(false);
+        }}
         title="Task Delete"
         message={`Are you sure you want to delete the task "${label}"?`}
       />

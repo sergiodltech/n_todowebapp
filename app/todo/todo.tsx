@@ -15,7 +15,7 @@ import TaskItem from "./TaskItem";
 type TaskObject = {
   text: string;
   createdAt: Date;
-  completedAt: Date | undefined;
+  completedAt: Date | null;
   finished: boolean;
 };
 
@@ -47,7 +47,7 @@ function getTasksFromLocalStorage(): { [key: string]: TaskObject } {
       tasks[taskKey] = {
         text: rawTask.text,
         createdAt: new Date(rawTask.createdAt),
-        completedAt: new Date(rawTask.completedAt),
+        completedAt: rawTask.completedAt ? new Date(rawTask.completedAt) : null,
         finished: rawTask.finished,
       };
     });
@@ -99,12 +99,11 @@ function ToDo() {
     });
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setState({
       ...state,
       newTaskInput: event.target.value,
     });
-  };
 
   const addNewTask = (event: React.MouseEvent) => {
     const now = new Date();
@@ -112,7 +111,7 @@ function ToDo() {
     const newTask = {
       text: state.newTaskInput,
       createdAt: now,
-      completedAt: undefined,
+      completedAt: null,
       finished: false,
     };
     const newTasks = { ...state.tasks, [taskKey]: newTask };
@@ -135,6 +134,8 @@ function ToDo() {
     setState({
       ...state,
       tasks: newTasks,
+      isClearUDialogOpen: false,
+      isClearFDialogOpen: false,
     });
   };
 
@@ -192,15 +193,6 @@ function ToDo() {
       );
     })
     .filter((x) => !!x);
-  const finishedTasksClearDialog = (
-    <ConfirmationDialog
-      open={state.isClearUDialogOpen}
-      onClose={() => {}}
-      onConfirm={() => deleteTasks(finishedTasksKeys)}
-      title="Clear Finished Tasks"
-      message={`Are you sure you want to delete all ${finishedTasksKeys.length} finished tasks?`}
-    />
-  );
 
   return (
     <main className="flex items-center justify-center pt-16 pb-4">
@@ -231,7 +223,6 @@ function ToDo() {
                     onChange={handleInputChange}
                   />
                   <IconButton
-                    onMouseOut={() => console.log("out")}
                     onClick={addNewTask}
                     id="new-task-button"
                     name="new-task-button"
@@ -244,7 +235,7 @@ function ToDo() {
           </div>
           <div
             className="flex-row"
-            style={unfinishedTasks.length > 0 ? {} : { display: "none" }}
+            style={unfinishedTasksKeys.length > 0 ? {} : { display: "none" }}
           >
             <FormControl
               fullWidth
@@ -266,10 +257,17 @@ function ToDo() {
                 </Button>
               </FormGroup>
             </FormControl>
+            <ConfirmationDialog
+              open={state.isClearUDialogOpen}
+              onClose={() => setState({ ...state, isClearUDialogOpen: false })}
+              onConfirm={() => deleteTasks(unfinishedTasksKeys)}
+              title="Clear Unfinished Tasks"
+              message={`Are you sure you want to delete all ${unfinishedTasksKeys.length} unfinished tasks?`}
+            />
           </div>
           <div
             className="flex-row"
-            style={finishedTasks.length > 0 ? {} : { display: "none" }}
+            style={finishedTasksKeys.length > 0 ? {} : { display: "none" }}
           >
             <FormControl
               fullWidth
@@ -289,6 +287,13 @@ function ToDo() {
                 </Button>
               </FormGroup>
             </FormControl>
+            <ConfirmationDialog
+              open={state.isClearFDialogOpen}
+              onClose={() => setState({ ...state, isClearFDialogOpen: false })}
+              onConfirm={() => deleteTasks(finishedTasksKeys)}
+              title="Clear Finished Tasks"
+              message={`Are you sure you want to delete all ${finishedTasksKeys.length} finished tasks?`}
+            />
           </div>
         </Box>
       </div>
