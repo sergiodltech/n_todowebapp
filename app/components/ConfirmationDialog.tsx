@@ -36,9 +36,9 @@ function ConfirmationDialog({
         <DialogContentText id="dialog-description">{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={_onCancel}>Cancel</Button>
+        <Button onClick={_onCancel}>キャンセル</Button>
         <Button onClick={_onConfirm} autoFocus>
-          Confirm
+          確認
         </Button>
       </DialogActions>
     </Dialog>

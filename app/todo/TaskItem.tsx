@@ -44,7 +44,7 @@ function TaskItem({
       className="absolute bottom-1 right-2 text-xs text-red-500"
       onClick={() => setDialogOpen(true)}
     >
-      Delete
+      削除
     </span>
   );
 
@@ -57,21 +57,23 @@ function TaskItem({
     const date: Date = completedAt ? completedAt : createdAt;
     const diff = now.valueOf() - date.valueOf();
     const diffInHours = diff / 1000 / 60 / 60;
-    let sinceString = type == TimeLegendType.Completion ? "Finished " : "";
+    let sinceString = type == TimeLegendType.Completion ? "に完了 " : "";
+    var timeString = "";
     if (diffInHours > 48) {
       const days = Math.round(diffInHours / 24);
-      sinceString += `${days} days ago`;
+      timeString += `${days}日前`;
     } else if (diffInHours > 24) {
-      sinceString += "Yesterday";
+      timeString += "昨日";
     } else if (diffInHours > 1) {
       const hours = Math.round(diffInHours);
-      const hrsString = hours == 1 ? "hr" : "hrs";
-      sinceString += `${hours}${hrsString} ago`;
+      const hrsString = hours == 1 ? "時" : "時";
+      timeString += `${hours}${hrsString}前`;
     } else {
       const mins = Math.round(diffInHours * 60);
-      const minsString = mins == 1 ? "min" : "mins";
-      sinceString += `${mins}${minsString} ago`;
+      const minsString = mins == 1 ? "分" : "分";
+      timeString += `${mins}${minsString}前`;
     }
+    sinceString = timeString + sinceString;
     return (
       <span className="absolute top-1 right-2 text-xs text-gray-500">
         {sinceString}
@@ -84,7 +86,11 @@ function TaskItem({
       <FormControlLabel
         className="text-lg"
         aria-label={`task-element-${label.slice(0, 10)}`}
-        label={label}
+        label={
+          <span className="text-pretty md:text-balance break-words">
+            {label}
+          </span>
+        }
         control={
           <Checkbox checked={finished} onChange={handleChange} name={name} />
         }
@@ -96,8 +102,8 @@ function TaskItem({
           deleteTasks([taskKey]);
           setDialogOpen(false);
         }}
-        title="Task Delete"
-        message={`Are you sure you want to delete the task "${label}"?`}
+        title="タスクを削除"
+        message={`「${label}」のタスクを削除してもよろしいですか？`}
       />
       {timeLegend()}
       {deleteText}

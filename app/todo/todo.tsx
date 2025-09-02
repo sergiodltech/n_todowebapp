@@ -106,7 +106,12 @@ function ToDo() {
       newTaskInput: event.target.value,
     });
 
-  const addNewTask = (event: React.MouseEvent) => {
+  const addNewTask = () => {
+    const newTaskText = state.newTaskInput.trim();
+    if (newTaskText.length === 0) {
+      setState({ ...state, newTaskInput: "" });
+      return;
+    }
     const now = new Date();
     const taskKey = now.getTime().toString();
     const newTask = {
@@ -119,6 +124,7 @@ function ToDo() {
     saveTasksToLocalStorage(newTasks);
     setState({
       ...state,
+      newTaskInput: "",
       tasks: newTasks,
     });
   };
@@ -150,7 +156,7 @@ function ToDo() {
       unfinishedTasksKeys.push(taskKey);
       return (
         <AnimatePresence>
-          <motion.div key={taskKey} layout>
+          <motion.div key={taskKey} layout transition={{ duration: 0.8 }}>
             <TaskItem
               name={`ti-${taskKey}`}
               label={task.text}
@@ -165,15 +171,6 @@ function ToDo() {
       );
     })
     .filter((x) => !!x);
-  const unfinishedTasksClearDialog = (
-    <ConfirmationDialog
-      open={state.isClearUDialogOpen}
-      onClose={() => {}}
-      onConfirm={() => deleteTasks(unfinishedTasksKeys)}
-      title="Clear Unfinished Tasks"
-      message={`Are you sure you want to delete all ${unfinishedTasksKeys.length} unfinished tasks?`}
-    />
-  );
 
   const finishedTasksKeys = new Array<string>();
   const finishedTasks = Object.keys(state.tasks)
@@ -185,7 +182,7 @@ function ToDo() {
       finishedTasksKeys.push(taskKey);
       return (
         <AnimatePresence>
-          <motion.div key={taskKey} layout>
+          <motion.div key={taskKey} layout transition={{ duration: 0.8 }}>
             <TaskItem
               name={`ti-${taskKey}`}
               label={task.text}
@@ -215,8 +212,8 @@ function ToDo() {
         </header>
         <Box sx={{ display: "flex-col", width: 1 / 2 }}>
           <div className="flex-row">
-            <p className="leading-6 text-gray-700 dark:text-gray-200 text-center">
-              Your very useful ToDo checklist
+            <p className="leading-6 text-gray-700 dark:text-gray-200 text-center font-extrabold">
+              とても便利なあなたのToDoリスト
             </p>
           </div>
           <div className="flex-row text-center">
@@ -227,7 +224,14 @@ function ToDo() {
                     type="text"
                     id="new-task-input"
                     name="new-task-input"
+                    value={state.newTaskInput}
                     onChange={handleInputChange}
+                    placeholder="新しいタスクを追加"
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        addNewTask();
+                      }
+                    }}
                   />
                   <IconButton
                     onClick={addNewTask}
@@ -250,9 +254,7 @@ function ToDo() {
               component="fieldset"
               variant="standard"
             >
-              <FormLabel sx={{ color: "whitesmoke" }}>
-                Unfinished tasks
-              </FormLabel>
+              <FormLabel sx={{ color: "whitesmoke" }}>未完了のタスク</FormLabel>
               <FormGroup id="unfinished-tasks" key="unfinished-tasks">
                 {unfinishedTasks}
                 <Button
@@ -260,7 +262,7 @@ function ToDo() {
                     setState({ ...state, isClearUDialogOpen: true })
                   }
                 >
-                  Clear
+                  削除
                 </Button>
               </FormGroup>
             </FormControl>
@@ -268,8 +270,8 @@ function ToDo() {
               open={state.isClearUDialogOpen}
               onClose={() => setState({ ...state, isClearUDialogOpen: false })}
               onConfirm={() => deleteTasks(unfinishedTasksKeys)}
-              title="Clear Unfinished Tasks"
-              message={`Are you sure you want to delete all ${unfinishedTasksKeys.length} unfinished tasks?`}
+              title="未完了のタスクを削除"
+              message={`すべての${unfinishedTasksKeys.length}未完了したタスクを削除してもよろしいですか？`}
             />
           </div>
           <div
@@ -282,7 +284,7 @@ function ToDo() {
               component="fieldset"
               variant="standard"
             >
-              <FormLabel sx={{ color: "whitesmoke" }}>Finished tasks</FormLabel>
+              <FormLabel sx={{ color: "whitesmoke" }}>完了のタスク</FormLabel>
               <FormGroup id="finished-tasks" key="finished-tasks">
                 {finishedTasks}
                 <Button
@@ -290,7 +292,7 @@ function ToDo() {
                     setState({ ...state, isClearFDialogOpen: true })
                   }
                 >
-                  Clear
+                  削除
                 </Button>
               </FormGroup>
             </FormControl>
@@ -298,8 +300,8 @@ function ToDo() {
               open={state.isClearFDialogOpen}
               onClose={() => setState({ ...state, isClearFDialogOpen: false })}
               onConfirm={() => deleteTasks(finishedTasksKeys)}
-              title="Clear Finished Tasks"
-              message={`Are you sure you want to delete all ${finishedTasksKeys.length} finished tasks?`}
+              title="完了のタスクを削除"
+              message={`すべての${finishedTasksKeys.length}完了したタスクを削除してもよろしいですか？`}
             />
           </div>
         </Box>
