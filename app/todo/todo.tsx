@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Button from "@mui/material/Button";
 import ConfirmationDialog from "~/components/ConfirmationDialog";
+import { motion, AnimatePresence } from "framer-motion";
 
 import TaskItem from "./TaskItem";
 
@@ -148,16 +149,19 @@ function ToDo() {
       }
       unfinishedTasksKeys.push(taskKey);
       return (
-        <TaskItem
-          key={taskKey}
-          name={`ti-${taskKey}`}
-          label={task.text}
-          createdAt={task.createdAt}
-          completedAt={task.completedAt}
-          finished={task.finished}
-          updateTaskList={updateTaskList}
-          deleteTasks={deleteTasks}
-        />
+        <AnimatePresence>
+          <motion.div key={taskKey} layout>
+            <TaskItem
+              name={`ti-${taskKey}`}
+              label={task.text}
+              createdAt={task.createdAt}
+              completedAt={task.completedAt}
+              finished={task.finished}
+              updateTaskList={updateTaskList}
+              deleteTasks={deleteTasks}
+            />
+          </motion.div>
+        </AnimatePresence>
       );
     })
     .filter((x) => !!x);
@@ -180,16 +184,19 @@ function ToDo() {
       }
       finishedTasksKeys.push(taskKey);
       return (
-        <TaskItem
-          key={taskKey}
-          name={`ti-${taskKey}`}
-          label={task.text}
-          createdAt={task.createdAt}
-          completedAt={task.completedAt}
-          finished={task.finished}
-          updateTaskList={updateTaskList}
-          deleteTasks={deleteTasks}
-        />
+        <AnimatePresence>
+          <motion.div key={taskKey} layout>
+            <TaskItem
+              name={`ti-${taskKey}`}
+              label={task.text}
+              createdAt={task.createdAt}
+              completedAt={task.completedAt}
+              finished={task.finished}
+              updateTaskList={updateTaskList}
+              deleteTasks={deleteTasks}
+            />
+          </motion.div>
+        </AnimatePresence>
       );
     })
     .filter((x) => !!x);
