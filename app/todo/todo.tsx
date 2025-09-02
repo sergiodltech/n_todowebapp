@@ -284,7 +284,7 @@ function ToDo() {
               component="fieldset"
               variant="standard"
             >
-              <FormLabel sx={{ color: "whitesmoke" }}>完了のタスク</FormLabel>
+              <FormLabel sx={{ color: "whitesmoke" }}>完了したタスク</FormLabel>
               <FormGroup id="finished-tasks" key="finished-tasks">
                 {finishedTasks}
                 <Button
@@ -300,7 +300,7 @@ function ToDo() {
               open={state.isClearFDialogOpen}
               onClose={() => setState({ ...state, isClearFDialogOpen: false })}
               onConfirm={() => deleteTasks(finishedTasksKeys)}
-              title="完了のタスクを削除"
+              title="完了したタスクを削除"
               message={`すべての${finishedTasksKeys.length}完了したタスクを削除してもよろしいですか？`}
             />
           </div>
