@@ -11,8 +11,34 @@ A ToDo App focused on Usability.
 - Time since completion / creation
 - Clear separation between finished and unfinished tasks
   - Clear list buttons
-- Dark / Light mode (Optional)
-- Expiration DateTime (Optional)
+
+## Test
+
+Clone repository and change to the root directory
+
+```bash
+$ git clone https://github.com/sergiodltech/n_todowebapp
+$ cd n_todowebapp
+```
+
+Be sure to use the latest stable npm and node versions
+
+```bash
+$ nvm install stable
+$ nvm use stable
+```
+
+Install dependencies
+
+```bash
+$ npm install
+```
+
+Run dev environment
+
+```bash
+node run dev
+```
 
 ### Docker Deployment
 
