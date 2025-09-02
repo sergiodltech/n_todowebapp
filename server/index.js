@@ -129,7 +129,7 @@ const route0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   default: root,
   links
 }, Symbol.toStringTag, { value: "Module" }));
-const toDoLogo = "/assets/logo2-DQuAk9q0.png";
+const toDoLogo = "/n_todowebapp/assets/logo2-DQuAk9q0.png";
 function ConfirmationDialog({
   open,
   onClose,
@@ -516,7 +516,7 @@ const route1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   default: home,
   meta
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-B-I7geA4.js", "imports": ["/assets/chunk-UH6JLGW7-sptz5SMi.js", "/assets/index-C9PU39qC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-FqmztzbU.js", "imports": ["/assets/chunk-UH6JLGW7-sptz5SMi.js", "/assets/index-C9PU39qC.js", "/assets/DefaultPropsProvider-BbNZ4y5c.js"], "css": ["/assets/root-D0xSLN7R.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/home": { "id": "routes/home", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/home-WpNfuZLw.js", "imports": ["/assets/chunk-UH6JLGW7-sptz5SMi.js", "/assets/DefaultPropsProvider-BbNZ4y5c.js", "/assets/index-C9PU39qC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-e8563861.js", "version": "e8563861", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/n_todowebapp/assets/entry.client-B-I7geA4.js", "imports": ["/n_todowebapp/assets/chunk-UH6JLGW7-sptz5SMi.js", "/n_todowebapp/assets/index-C9PU39qC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/n_todowebapp/assets/root-FqmztzbU.js", "imports": ["/n_todowebapp/assets/chunk-UH6JLGW7-sptz5SMi.js", "/n_todowebapp/assets/index-C9PU39qC.js", "/n_todowebapp/assets/DefaultPropsProvider-BbNZ4y5c.js"], "css": ["/n_todowebapp/assets/root-D0xSLN7R.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/home": { "id": "routes/home", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/n_todowebapp/assets/home-rnNHFNLY.js", "imports": ["/n_todowebapp/assets/chunk-UH6JLGW7-sptz5SMi.js", "/n_todowebapp/assets/DefaultPropsProvider-BbNZ4y5c.js", "/n_todowebapp/assets/index-C9PU39qC.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/n_todowebapp/assets/manifest-deff1a46.js", "version": "deff1a46", "sri": void 0 };
 const assetsBuildDirectory = "build/client";
 const basename = "/";
 const future = { "unstable_middleware": false, "unstable_optimizeDeps": false, "unstable_splitRouteModules": false, "unstable_subResourceIntegrity": false, "unstable_viteEnvironmentApi": false };
@@ -524,7 +524,7 @@ const ssr = true;
 const isSpaMode = false;
 const prerender = [];
 const routeDiscovery = { "mode": "lazy", "manifestPath": "/__manifest" };
-const publicPath = "/";
+const publicPath = "/n_todowebapp/";
 const entry = { module: entryServer };
 const routes = {
   "root": {
